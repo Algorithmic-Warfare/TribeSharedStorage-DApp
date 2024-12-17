@@ -1,0 +1,16 @@
+# Change the following to the preferred smart assembly
+# If defined, this will take priority over Smart Assembly IDs passed via URL query param
+VITE_SMARTASSEMBLY_ID=
+VITE_GATEWAY_HTTP="https://blockchain-gateway-test.nursery.reitnorf.com"
+VITE_GATEWAY_WS="wss://blockchain-gateway-test.nursery.reitnorf.com"
+
+# SYNPRESS E2E NETWORK SETTINGS
+PRIVATE_KEY="13057220bfc1dd9f1023c55b0145077e19b0f9100050f0b4cd5899ea4f5828d2"
+NETWORK_NAME="EVE Devnet Game"
+RPC_URL="https://devnet-game-sync.nursery.reitnorf.com"
+CHAIN_ID=3541000
+SYMBOL=GAS
+IS_TESTNET=TRUE
+BLOCK_EXPLORER="https://devnet-game-blockscout.nursery.reitnorf.com/"
+SYNDEBU=TRUE
+STABLE_MODE=TRUE
