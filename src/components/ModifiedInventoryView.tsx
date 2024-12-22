@@ -28,7 +28,6 @@ import {
 } from "@eveworld/ui-components";
 import { useConnection, useNotification } from "@eveworld/contexts";
 import { WalletClient } from "viem";
-import IWorldAbi from "../../../builder-examples/tribe-smart-storage-unit/packages/contracts/out/IWorld.sol/IWorld.abi.json";
 import { Severity } from "@eveworld/types";
 
 import { useMUD } from "../MUDContext";
@@ -57,7 +56,7 @@ const ModifiedInventoryView = React.memo(
     const { systemCalls } = useMUD();
 
     const playerInventory = ephemeralInventoryList.find((x) => {
-      return x.ownerId == walletClient?.account?.address;
+      return x.ownerId == walletClient?.account?.address.toLowerCase();
     });
 
     // If owner, return persistent storage items

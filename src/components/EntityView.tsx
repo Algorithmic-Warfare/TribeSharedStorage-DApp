@@ -59,7 +59,7 @@ const EntityView = React.memo((): JSX.Element => {
   ).inventory;
 
   const playerInventory = ephemeralInventoryList.find((x) => {
-    return x.ownerId == walletClient?.account?.address;
+    return x.ownerId == walletClient?.account?.address.toLowerCase();
   });
 
   const ephemeralInventoryItemIds =
