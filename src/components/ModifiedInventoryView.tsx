@@ -1,36 +1,19 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
+import { Severity, SmartAssemblyType, type InventoryItem } from "@eveworld/types";
 import {
-  AbiItem,
-  BaseError,
-  ContractFunctionRevertedError,
-  encodeFunctionData,
-  getAbiItem,
-  getContract,
-  GetContractReturnType,
-  PublicClient,
-  Client,
-  UnionOmit,
-  ReadContractParameters,
-  Abi,
-} from "viem";
-import { SmartAssemblyType, type InventoryItem } from "@eveworld/types";
-import {
-  findOwnerByAddress,
   formatM3,
-  getInventoryItemId,
   isOwner,
 } from "@eveworld/utils";
 import {
   EveLinearBar,
   EveScroll,
   EveButton,
-  EveInput,
+  EveInput
 } from "@eveworld/ui-components";
-import { useConnection, useNotification } from "@eveworld/contexts";
+import { useNotification } from "@eveworld/contexts";
 import { WalletClient } from "viem";
-import { Severity } from "@eveworld/types";
-
 import { useMUD } from "../MUDContext";
+import {ethers} from "ethers";
 
 const ModifiedInventoryView = React.memo(
   ({
@@ -52,11 +35,14 @@ const ModifiedInventoryView = React.memo(
       smartAssembly,
       walletClient?.account?.address
     );
-
+    const { notify, handleClose } = useNotification();
     const { systemCalls } = useMUD();
 
     const playerInventory = ephemeralInventoryList.find((x) => {
-      return x.ownerId == walletClient?.account?.address.toLowerCase();
+      return (
+        ethers.getAddress(x.ownerId) ==
+        ethers.getAddress(walletClient?.account?.address as string)
+      );
     });
 
     // If owner, return persistent storage items
@@ -83,11 +69,18 @@ const ModifiedInventoryView = React.memo(
       inventoryItemId: bigint,
       inventoryItemAmount: bigint
     ) => {
+
+    if (ethers.getNumber(inventoryItemAmount)==0){
+      notify({ type: Severity.Error, message: "No item selected to withdraw" });
+    } else {
+      notify({ type: Severity.Info, message: "Withdrawing inventory items..." });
       await systemCalls.withdraw(
         BigInt(smartAssembly.id),
         inventoryItemId,
         inventoryItemAmount
       );
+       handleClose();
+     };
     };
 
     return (

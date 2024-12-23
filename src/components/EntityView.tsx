@@ -1,9 +1,5 @@
 import React, { useEffect } from "react";
-
 import {
-  findOwnerByAddress,
-  formatM3,
-  getInventoryItemId,
   isOwner,
 } from "@eveworld/utils";
 import {
@@ -30,6 +26,7 @@ import SmartGateImage from "../assets/smart-gate.png";
 import SmartStorageUnitImage from "../assets/smart-storage-unit.png";
 import SmartTurretImage from "../assets/smart-turret.png";
 import { useMUD } from "../MUDContext";
+import {ethers} from "ethers";
 
 const EntityView = React.memo((): JSX.Element => {
   const { defaultNetwork, gatewayConfig, walletClient } = useConnection();
@@ -59,7 +56,10 @@ const EntityView = React.memo((): JSX.Element => {
   ).inventory;
 
   const playerInventory = ephemeralInventoryList.find((x) => {
-    return x.ownerId == walletClient?.account?.address.toLowerCase();
+    return (
+      ethers.getAddress(x.ownerId) ==
+      ethers.getAddress(walletClient?.account?.address as string)
+    );
   });
 
   const ephemeralInventoryItemIds =
@@ -77,11 +77,19 @@ const EntityView = React.memo((): JSX.Element => {
     await systemCalls.ping("hello");
   };
   const handleDeposit = async () => {
-    await systemCalls.deposit(
-      BigInt(smartAssembly.id),
-      ephemeralInventoryItemIds
-    );
-  };
+    if (ephemeralInventoryItemIds.length==0){
+      notify({ type: Severity.Error, message: "No items to deposit" });
+    } else {
+      notify({ type: Severity.Info, message: "Depositing inventory items..." });
+      await systemCalls.deposit(
+        BigInt(smartAssembly.id),
+         ephemeralInventoryItemIds
+       );
+       handleClose();
+     };
+    }
+      
+
 
   return (
     <EveLoadingAnimation position="diagonal">
